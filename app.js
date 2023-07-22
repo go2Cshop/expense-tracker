@@ -5,7 +5,7 @@ const exphbs = require('express-handlebars')
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-
+require('./config/mongoose')
 const routes = require('./routes/index')
 
 const app = express()
