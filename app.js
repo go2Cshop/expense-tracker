@@ -12,8 +12,8 @@ const app = express()
 const PORT = process.env.PORT
 
 // Handlebars設定
-app.engine('hbs', exphbs({ defaultlayout: 'main', extname: '.hbs' }))
-app.set('view engine', 'hbs')
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
+app.set('view engine', 'handlebars')
 
 app.use(routes)
 
