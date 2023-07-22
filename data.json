@@ -15,33 +15,33 @@
     "SEED_RECORD": [
       {
         "name": "午餐",
+        "date": "2019/4/23",
         "amount": "60",
-        "date": "2019-04-23",
-        "category": "food"
+        "category_name": "餐飲食品"
       },
       {
         "name": "晚餐",
+        "date": "2019/4/23",
         "amount": "60",
-        "date": "2019-04-23",
-        "category": "food"
+        "category_name": "餐飲食品"
       },
       {
         "name": "捷運",
+        "date": "2019/4/23",
         "amount": "120",
-        "date": "2019-04-23",
-        "category": "traffic"
+        "category_name": "交通出行"
       },
       {
         "name": "電影:驚奇隊長",
+        "date": "2019/4/23",
         "amount": "60",
-        "date": "2019-04-23",
-        "category": "entertainment"
+        "category_name": "休閒娛樂"
       },
       {
         "name": "租金",
+        "date": "2019/4/1",
         "amount": "25000",
-        "date": "2019-04-01",
-        "category": "house"
+        "category_name": "家居物業"
       }
     ]
   }
