@@ -1,5 +1,5 @@
-const db = require('../../config/mongoose')
 const Category = require('../category')
+const db = require('../../config/mongoose')
 
 const SEED_CATEGORY = [
   {
@@ -25,17 +25,25 @@ const SEED_CATEGORY = [
 ]
 
 db.once('open', () => {
-  Promise.all(
-    SEED_CATEGORY.map(item => {
-      return Category.create({
-        name: item.name,
-        icon: item.icon
-      })
-    })
-  )
-    .then(() => {
-      console.log('Category seeder is executed')
+  Category.find()
+    .then(categories => {
+      if (!categories.length) {
+        Promise.all(
+          SEED_CATEGORY.map(item => {
+            return Category.create({
+              name: item.name,
+              icon: item.icon
+            })
+          })
+        )
+        .then(() => {
+          console.log('Category seeder is executed')
+          process.exit()
+        })
+      }
+    else {
+    console.log('CategorySeeder is executed.')
       process.exit()
-    })
-
+    }
+  })
 }) 

@@ -42,10 +42,10 @@
               {{/if}}
               <div class="d-flex flex-row align-items-center justify-content-between">
                 <div class="d-flex flex-row align-items-center">
-                  <i class="fa-solid fa-utensils fa-2xl" style="color: #29b8ff;"></i>
-                  <div class="d-flex flex-column align-items-center px-3">
-                    <span id="itemName" class="fs-5">{{this.name}}</span>
-                    <span id="itemDate" class="fs-6">{{this.date}}</span>
+                  <i class="{{this.categoryId.icon}}" style="color: #29b8ff;"></i>
+                  <div class="d-flex flex-column px-3 my-1">
+                    <span id="itemName" class="h6 my-0">{{this.name}}</span>
+                    <span id="itemDate" class="h6 my-0">{{this.date}}</span>
                   </div>
                 </div>
                 <div class="d-flex justify-content-end col-auto">

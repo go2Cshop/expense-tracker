@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     .lean()
     .then(categories => {
       // 找出Record的資料，結果存到records
-      Record.find(userId)
+      Record.find({userId})
         // populate要以'使用Schema.Types.ObjectId'的欄位名稱
         .populate('categoryId')
         .lean()

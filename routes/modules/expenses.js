@@ -9,17 +9,10 @@ const utilities = {
     return new Date(dashDate).toLocaleDateString('zh-TW')
   },
   ConvertToDashDate(slashDate) {
-    // 1. 取出日期，並將年月日分開存入陣列
+    // 1. 取出日期，並將年月日以字串格式分開存入陣列，並以padStart函數補0
     const date = new Date(slashDate)
-    const dateArray = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
-    // 2.判斷是否需要補0
-    dateArray.map((value, index) => {
-      if (value.toString().length < 2) {
-        value = '0' + value.toString()
-        dateArray.splice(index, 1, value)
-      }
-    })
-    // 3. 重組成字串
+    const dateArray = [date.getFullYear(), (date.getMonth() + 1).toString(10).padStart(2, '0'), (date.getDate()).toString(10).padStart(2, '0')]
+    // 2. 重組成字串
     return dateArray.join('-')
   }
 }
@@ -60,7 +53,7 @@ router.post('/', (req, res) => {
 
 // GET路由：edit
 router.get('/:id', (req, res) => {
-  const id = req.params.id
+  const _id = req.params.id
   const userId = req.user._id
 
   Category.find()
@@ -87,7 +80,7 @@ router.get('/:id', (req, res) => {
 
 // PUT路由：edit
 router.put('/:id', (req, res) => {
-  const id = req.params.id
+  const _id = req.params.id
   const userId = req.user._id
   const { name, date, categoryName, amount } = req.body
   let slashDate = utilities.ConvertToSlashDate(date)//年/月/日
@@ -111,7 +104,7 @@ router.put('/:id', (req, res) => {
 
 // DELETE路由：delete
 router.delete('/:id', (req, res) => {
-  const id = req.params.id
+  const _id = req.params.id
   const userId = req.user._id
 
   Record.findOne({ _id, userId })
