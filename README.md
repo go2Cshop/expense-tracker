@@ -43,7 +43,7 @@
  ```
  8. 在瀏覽器輸入http://localhost:3000，即可連線。
 
- 9. 可先用種子資料帳密登入察看使用功能。
-    email輸入 user1@gmail.com
-    password輸入 1234
+ 9. 可先用種子資料帳密登入察看使用功能
+    - email輸入 user1@gmail.com
+    - password輸入 1234
 
