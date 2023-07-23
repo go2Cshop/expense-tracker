@@ -3,6 +3,27 @@ const router = express.Router()
 const Record = require('../../models/record')
 const Category = require('../../models/category')
 
+// 函式庫
+const utilities = {
+  ConvertToSlashDate(dashDate) {
+    return new Date(dashDate).toLocaleDateString('zh-TW')
+  },
+  ConvertToDashDate(slashDate) {
+    // 1. 取出日期，並將年月日分開存入陣列
+    const date = new Date(slashDate)
+    const dateArray = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+    // 2.判斷是否需要補0
+    dateArray.map((value, index) => {
+      if (value.toString().length < 2) {
+        value = '0' + value.toString()
+        dateArray.splice(index, 1, value)
+      }
+    })
+    // 3. 重組成字串
+    return dateArray.join('-')
+  }
+}
+
 // GET路由：new
 router.get('/new', (req, res) => {
   // 先找出Category的資料，結果存到categories
@@ -18,7 +39,7 @@ router.post('/', (req, res) => {
   const { name, date, categoryName, amount } = req.body
   const userId = "6492b4eb257d00d8a027bd08" //測試資料，等登入功能完成後修改
   // 將日期從YYYY-MM-DD轉成YYYY/MM/DD
-  let dateTW = new Date(date).toLocaleDateString('zh-TW')
+  let slashDate = utilities.ConvertToSlashDate(date)
 
   Category.findOne({ name: categoryName })
     .lean()
@@ -27,7 +48,7 @@ router.post('/', (req, res) => {
 
       Record.create({
         name,
-        date: dateTW,
+        date: slashDate,
         amount,
         userId,
         categoryId
@@ -49,44 +70,32 @@ router.get('/:id', (req, res) => {
         .lean()
         .then(record => {
           // 將日期從YYYY/MM/DD轉成YYYY-MM-DD 給HTML的value
-          // 1. 取出日期，並將年月日分開存入陣列
-          //getMonth() 從 0 開始計算，一月 = 0,所以實際應用時請記得 +1。
-          const date = new Date(record.date)
-          const dateArray = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
-          // 2.判斷是否需要補0
-          dateArray.map((value, index) => {
-            if (value.toString().length < 2) {
-              value = '0' + value.toString()
-              dateArray.splice(index, 1, value)
-            }
-          })
-          // 3. 重組成字串
-          dateForHb = dateArray.join('-')
+          dashDate = utilities.ConvertToDashDate(record.date)
 
           categories.map((category, index) => {
             if (category.name === record.categoryId.name) {
               categories[index]['isChoosed'] = true
             }
           })
-          res.render('edit', { categories, record, dateForHb })
+          res.render('edit', { categories, record, dashDate })
         })
         .catch(err => console.log(err))
     })
     .catch(err => console.log(err))
 })
 
-// POST路由：edit
-router.post('/:id', (req, res) => {
+// PUT路由：edit
+router.put('/:id', (req, res) => {
   const id = req.params.id
   const { name, date, categoryName, amount } = req.body
-  let dateTW = new Date(date).toLocaleDateString('zh-TW')//年/月/日
+  let slashDate = utilities.ConvertToSlashDate(date)//年/月/日
 
   Category.findOne({ name: categoryName })
     .then(category => {
       Record.findById(id)
         .then(record => {
           record.name = name
-          record.date = dateTW
+          record.date = slashDate
           record.amount = amount
           record.userId = "6492b4eb257d00d8a027bd08"
           record.categoryId = category._id
@@ -99,8 +108,8 @@ router.post('/:id', (req, res) => {
     .catch(err => console.log(err))
 })
 
-// Post路由：delete
-router.post('/:id/delete', (req, res) => {
+// DELETE路由：delete
+router.delete('/:id', (req, res) => {
   const id = req.params.id
 
   Record.findById(id)
