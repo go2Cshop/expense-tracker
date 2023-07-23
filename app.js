@@ -4,6 +4,8 @@ const exphbs = require('express-handlebars')
 // Method-Override: RESTful API相關
 const methodOverride = require('method-override')
 const session = require('express-session')
+// Connect flash
+const flash = require('connect-flash')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -11,7 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 require('./config/mongoose')
 const routes = require('./routes')
-const passport = require('passport')
+const usePassport = require('./config/passport')
 
 const app = express()
 const PORT = process.env.PORT
@@ -32,6 +34,21 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+
+// 呼叫usePassport
+usePassport(app)
+
+// Connect flash設定
+app.use(flash())
+
+// Middleware
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
+  next()
+})
 
 app.use(routes)
 

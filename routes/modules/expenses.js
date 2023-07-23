@@ -37,7 +37,7 @@ router.get('/new', (req, res) => {
 // POST路由：new
 router.post('/', (req, res) => {
   const { name, date, categoryName, amount } = req.body
-  const userId = "6492b4eb257d00d8a027bd08" //測試資料，等登入功能完成後修改
+  const userId = req.user._id
   // 將日期從YYYY-MM-DD轉成YYYY/MM/DD
   let slashDate = utilities.ConvertToSlashDate(date)
 
@@ -61,11 +61,12 @@ router.post('/', (req, res) => {
 // GET路由：edit
 router.get('/:id', (req, res) => {
   const id = req.params.id
+  const userId = req.user._id
 
   Category.find()
     .lean()
     .then(categories => {
-      Record.findById(id)
+      Record.findOne({ _id, userId })
         .populate('categoryId')
         .lean()
         .then(record => {
@@ -87,17 +88,17 @@ router.get('/:id', (req, res) => {
 // PUT路由：edit
 router.put('/:id', (req, res) => {
   const id = req.params.id
+  const userId = req.user._id
   const { name, date, categoryName, amount } = req.body
   let slashDate = utilities.ConvertToSlashDate(date)//年/月/日
 
   Category.findOne({ name: categoryName })
     .then(category => {
-      Record.findById(id)
+      Record.findOne({ _id, userId })
         .then(record => {
           record.name = name
           record.date = slashDate
           record.amount = amount
-          record.userId = "6492b4eb257d00d8a027bd08"
           record.categoryId = category._id
 
           return record.save()
@@ -111,8 +112,9 @@ router.put('/:id', (req, res) => {
 // DELETE路由：delete
 router.delete('/:id', (req, res) => {
   const id = req.params.id
+  const userId = req.user._id
 
-  Record.findById(id)
+  Record.findOne({ _id, userId })
     .then(record => record.remove())
     .then(() => res.redirect('/'))
     .catch(err => console.log(err))

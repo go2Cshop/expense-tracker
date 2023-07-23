@@ -9,15 +9,17 @@ module.exports = app => {
 
   // Local Strategy
   passport.use(new LocalStrategy(
-    { usernameField: 'email' },
-    (email, password, done) => {
+    { usernameField: 'email',
+      passReqToCallback: true // 取得LocalStrategy的req
+    },
+    (req, email, password, done) => {
       User.findOne({ email })
         .then(user => {
           if (!user) {
-            return done(null, false, { message: '此信箱尚未註冊！' })
+            return done(null, false, req.flash('warning_msg', '此信箱尚未註冊！'))
           }
           if (user.password !== password) {
-            return done(null, false, { message: '密碼錯誤！' })
+            return done(null, false, req.flash('warning_msg', '密碼錯誤！'))
           }
           return done(null, user)
         })
