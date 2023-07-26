@@ -8,8 +8,8 @@ const bcrypt = require('bcryptjs')
 
 module.exports = app => {
   // 初始化
-  app.use(passport.initialize());
-  app.use(passport.session());
+  app.use(passport.initialize())
+  app.use(passport.session())
 
   // Local Strategy
   passport.use(new LocalStrategy(
@@ -43,42 +43,41 @@ module.exports = app => {
     callbackURL: process.env.FACEBOOK_CALLBACK,
     profileFields: ['email', 'displayName']
   },
-    (accessToken, refreshToken, profile, done) => {
-      const { email, name } = profile._json
+  (accessToken, refreshToken, profile, done) => {
+    const { email, name } = profile._json
 
-      User.findOne({ email })
-        .then(user => {
-          if (user) {
-            return done(null, user)
-          }
-          const randomPassword = Math.random().toString(36).slice(-8)
-          bcrypt
-            .genSalt(10)
-            .then(salt => bcrypt.hash(randomPassword, salt))
-            .then(hash => {
-              User.create({
-                name,
-                email,
-                password: hash
-              })
+    User.findOne({ email })
+      .then(user => {
+        if (user) {
+          return done(null, user)
+        }
+        const randomPassword = Math.random().toString(36).slice(-8)
+        bcrypt
+          .genSalt(10)
+          .then(salt => bcrypt.hash(randomPassword, salt))
+          .then(hash => {
+            User.create({
+              name,
+              email,
+              password: hash
             })
-            .then(user => done(null, user))
-            .catch(err => done(err, false))
-        })
-        .catch(err => done(err, false))
-    }
+          })
+          .then(user => done(null, user))
+          .catch(err => done(err, false))
+      })
+      .catch(err => done(err, false))
+  }
   ))
-
 
   // 序列化與反序列化
   passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
+    done(null, user.id)
+  })
 
   passport.deserializeUser((id, done) => {
     User.findById(id)
       .lean()
       .then(user => done(null, user))
       .catch(err => done(err, null))
-  });
-} 
+  })
+}

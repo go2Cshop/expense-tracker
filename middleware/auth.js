@@ -6,4 +6,4 @@ module.exports = {
     req.flash('warning_msg', '請先登入！')
     res.redirect('/users/login')
   }
-} 
+}

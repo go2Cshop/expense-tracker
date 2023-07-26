@@ -10,12 +10,11 @@ router.get('/login', (req, res) => {
 })
 
 // Post路由: 登入頁(login)
-router.post('/login', 
+router.post('/login',
   passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/users/login'
-}))
-
+    successRedirect: '/',
+    failureRedirect: '/users/login'
+  }))
 
 // Get路由: 註冊頁(register)
 router.get('/register', (req, res) => {
@@ -51,21 +50,21 @@ router.post('/register', (req, res) => {
           .genSalt(10)
           .then(salt => bcrypt.hash(password, salt))
           .then(hash => {
-            User.create({ 
-              name, 
-              email, 
+            User.create({
+              name,
+              email,
               password: hash
             })
-            .then(() => res.redirect('/users/login'))
-            .catch(err => console.log(err))
+              .then(() => res.redirect('/users/login'))
+              .catch(err => console.log(err))
           })
-        }
-      })
+      }
+    })
     .then(() => req.flash('success_msg', '你已經成功註冊，請重新登入。'))
     .then(() => res.redirect('/users/login'))
     .catch(err => console.log(err))
 })
- 
+
 // Get路由: 登出頁(logout)
 router.get('/logout', (req, res) => {
   req.logout()
@@ -73,6 +72,4 @@ router.get('/logout', (req, res) => {
   res.redirect('/users/login')
 })
 
-
-
-module.exports = router 
+module.exports = router

@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     .lean()
     .then(categories => {
       // 找出Record的資料，結果存到records
-      Record.find({userId})
+      Record.find({ userId })
         // populate要以'使用Schema.Types.ObjectId'的欄位名稱
         .populate('categoryId')
         .lean()
@@ -21,13 +21,11 @@ router.get('/', (req, res) => {
 
           records.map((record, index) => {
             // 判斷該項為奇偶數, 並新增屬性到records
-            if (index % 2) {
-              records[index]['isEven'] = false
-            } else {
-              records[index]['isEven'] = true
-            }
+            const isEven = index % 2 === 0
+            record.isEven = isEven
             // 計算花費總額(totalAmount)
             totalAmount += record.amount
+            return record
           })
           // 將categories, records, totalAmount傳到handlebard
           res.render('index', { categories, records, totalAmount })
@@ -43,7 +41,7 @@ router.post('/', (req, res) => {
   // 1-a. 若沒有選取，跳轉回首頁
   if (!categoryName) {
     res.redirect('/')
-    // 1-b. 有選取的狀況 
+    // 1-b. 有選取的狀況
   } else {
     // 先找出Category的資料，結果存到categories
     Category.find()
@@ -55,7 +53,7 @@ router.post('/', (req, res) => {
         categories.forEach(category => {
           if (category.name === categoryName) {
             categoryId = category._id
-            category['isChoosed'] = true
+            category.isChoosed = true
           }
         })
 
@@ -69,13 +67,12 @@ router.post('/', (req, res) => {
             let totalAmount = 0
             // 判斷該項為奇偶數, 並新增屬性到records
             records.map((record, index) => {
-              if (index % 2) {
-                records[index]['isEven'] = false
-              } else {
-                records[index]['isEven'] = true
-              }
+              // 判斷該項為奇偶數, 並新增屬性到records
+              const isEven = index % 2 === 0
+              record.isEven = isEven
               // 計算花費總額(totalAmount)
               totalAmount += record.amount
+              return record
             })
             // 將categories, records, totalAmount傳到handlebars
             res.render('index', { categories, records, totalAmount, categoryName })
@@ -85,4 +82,4 @@ router.post('/', (req, res) => {
       .catch(err => console.log(err))
   }
 })
-module.exports = router 
+module.exports = router

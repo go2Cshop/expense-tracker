@@ -5,10 +5,10 @@ const Category = require('../../models/category')
 
 // 函式庫
 const utilities = {
-  ConvertToSlashDate(dashDate) {
+  ConvertToSlashDate (dashDate) {
     return new Date(dashDate).toLocaleDateString('zh-TW')
   },
-  ConvertToDashDate(slashDate) {
+  ConvertToDashDate (slashDate) {
     // 1. 取出日期，並將年月日以字串格式分開存入陣列，並以padStart函數補0
     const date = new Date(slashDate)
     const dateArray = [date.getFullYear(), (date.getMonth() + 1).toString(10).padStart(2, '0'), (date.getDate()).toString(10).padStart(2, '0')]
@@ -32,12 +32,12 @@ router.post('/', (req, res) => {
   const { name, date, categoryName, amount } = req.body
   const userId = req.user._id
   // 將日期從YYYY-MM-DD轉成YYYY/MM/DD
-  let slashDate = utilities.ConvertToSlashDate(date)
+  const slashDate = utilities.ConvertToSlashDate(date)
 
   Category.findOne({ name: categoryName })
     .lean()
     .then(category => {
-      let categoryId = category._id
+      const categoryId = category._id
 
       Record.create({
         name,
@@ -64,11 +64,11 @@ router.get('/:id', (req, res) => {
         .lean()
         .then(record => {
           // 將日期從YYYY/MM/DD轉成YYYY-MM-DD 給HTML的value
-          dashDate = utilities.ConvertToDashDate(record.date)
+          const dashDate = utilities.ConvertToDashDate(record.date)
 
-          categories.map((category, index) => {
+          categories.forEach((category, index) => {
             if (category.name === record.categoryId.name) {
-              categories[index]['isChoosed'] = true
+              categories[index].isChoosed = true
             }
           })
           res.render('edit', { categories, record, dashDate })
@@ -83,7 +83,7 @@ router.put('/:id', (req, res) => {
   const _id = req.params.id
   const userId = req.user._id
   const { name, date, categoryName, amount } = req.body
-  let slashDate = utilities.ConvertToSlashDate(date)//年/月/日
+  const slashDate = utilities.ConvertToSlashDate(date)// 年/月/日
 
   Category.findOne({ name: categoryName })
     .then(category => {
@@ -113,4 +113,4 @@ router.delete('/:id', (req, res) => {
     .catch(err => console.log(err))
 })
 
-module.exports = router 
+module.exports = router

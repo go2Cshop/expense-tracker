@@ -16,4 +16,4 @@ router.get('/facebook/callback',
   })
 )
 
-module.exports = router 
+module.exports = router
